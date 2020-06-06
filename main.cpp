@@ -2,7 +2,18 @@
 #include <cstring>
 #include <fstream>
 
+#include <unistd.h>
+
 using namespace std;
+
+void *thread(void *ptr)
+{
+    for(int i = 0;i < 3;i++) {
+        sleep(1);
+        cout << "This is a pthread." << endl;
+    }
+    return 0;
+}
 
 // 基类
 class Shape
@@ -78,6 +89,19 @@ void printTest() {
 
 int main()
 {
+    //多线程测试
+    pthread_t id;
+    int ret = pthread_create(&id, NULL, thread, NULL);
+    if(ret) {
+        cout << "Create pthread error!" << endl;
+        return 1;
+    }
+    for(int i = 0;i < 3;i++) {
+        cout <<  "This is the main process." << endl;
+        sleep(1);
+    }
+    pthread_join(id, NULL);
+
     Shape *shap;//使用指针才生效
     Rectangle rectangle;
     rectangle.setHeight(6);
@@ -111,6 +135,8 @@ int main()
     cout <<a<<endl;
 
     xxq_space::printTest();
+
+
 
     return 0;
 }
